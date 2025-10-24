@@ -60,11 +60,10 @@ void printFigures(const vector<shared_ptr<Figure>>& figures, const string& title
              << "), Площадь: " << static_cast<double>(*figures[i]) << endl;
     }
 }
+vector<shared_ptr<Figure>> moveFigures(vector<shared_ptr<Figure>>& figures) {
+    return std::move(figures);
+}
 
 vector<shared_ptr<Figure>> copyFigures(const vector<shared_ptr<Figure>>& figures) {
     return figures;
-}
-
-vector<shared_ptr<Figure>> moveFigures(vector<shared_ptr<Figure>>& figures) {
-    return std::move(figures);
 }

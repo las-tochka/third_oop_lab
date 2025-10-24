@@ -8,6 +8,7 @@
 class Rectangle : public Figure {
 public:
     Rectangle();
+    
     Rectangle(std::array<int, 2> a, std::array<int, 2> b, 
            std::array<int, 2> c, std::array<int, 2> d);
     void getCenter(std::vector<double>& result_coords) const override;

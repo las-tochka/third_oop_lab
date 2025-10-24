@@ -16,7 +16,7 @@ void Trapezoid::getCenter(std::vector<double>& result_coords) const {
     result_coords.push_back(y);
 }
 
-double distancePointToLine(const std::array<int, 2>& p, 
+double Height(const std::array<int, 2>& p, 
                           const std::array<int, 2>& a, 
                           const std::array<int, 2>& b) {
     double A = b[1] - a[1];
@@ -28,8 +28,6 @@ double distancePointToLine(const std::array<int, 2>& p,
 Trapezoid::operator double() const {
     double base1 = std::sqrt(std::pow(B[0] - A[0], 2) + std::pow(B[1] - A[1], 2));
     double base2 = std::sqrt(std::pow(D[0] - C[0], 2) + std::pow(D[1] - C[1], 2));
-
-    double height = distancePointToLine(C, A, B);
-
+    double height = Height(C, A, B);
     return (base1 + base2) / 2.0 * height;
 }
