@@ -6,6 +6,7 @@
 #include "../include/Square.hpp"
 #include "../include/Rectangle.hpp"
 #include "../include/Trapezoid.hpp"
+#include "../functions.cpp"
 
 TEST(SquareTest, OutputOperator) {
     const std::array<int, 2> a = {3, 7};
@@ -281,6 +282,60 @@ TEST(FigureComparisonTest, EqualAndNotEqual) {
     EXPECT_FALSE(sq1 != sq2);
     EXPECT_TRUE(sq1 != sq3);
     EXPECT_FALSE(sq1 == sq3);
+}
+
+TEST(FigureTest, CreateFigures) {
+    auto figures = createFigures();
+    ASSERT_EQ(figures.size(), 2);
+    EXPECT_DOUBLE_EQ(static_cast<double>(*figures[0]), 1.0);
+    EXPECT_DOUBLE_EQ(static_cast<double>(*figures[1]), 4.0);
+}
+
+TEST(FigureTest, TotalArea) {
+    auto figures = createFigures();
+    double total = getTotalArea(figures);
+    EXPECT_DOUBLE_EQ(total, 5.0);
+}
+
+TEST(FigureTest, RemoveFigureByIndex) {
+    auto figures = createFigures();
+    ASSERT_EQ(figures.size(), 2);
+    removeFigureByIndex(figures, 0);
+    EXPECT_EQ(figures.size(), 1);
+    EXPECT_DOUBLE_EQ(static_cast<double>(*figures[0]), 4.0);
+}
+
+TEST(FigureTest, RemoveInvalidIndex) {
+    auto figures = createFigures();
+    ASSERT_EQ(figures.size(), 2);
+    removeFigureByIndex(figures, 10);
+    EXPECT_EQ(figures.size(), 2);
+}
+
+TEST(FigureTest, MoveFigures) {
+    auto figures = createFigures();
+    auto moved = moveFigures(figures);
+    EXPECT_TRUE(figures.empty());
+    EXPECT_EQ(moved.size(), 2);
+}
+
+TEST(FigureTest, CopyFigures) {
+    auto figures = createFigures();
+    auto copy = copyFigures(figures);
+    EXPECT_EQ(copy.size(), figures.size());
+    EXPECT_DOUBLE_EQ(static_cast<double>(*copy[0]), static_cast<double>(*figures[0]));
+    EXPECT_DOUBLE_EQ(static_cast<double>(*copy[1]), static_cast<double>(*figures[1]));
+}
+
+TEST(FigureTest, FigureCenter) {
+    auto figures = createFigures();
+    vector<double> center;
+    figures[0]->getCenter(center);
+    EXPECT_DOUBLE_EQ(center[0], 0.5);
+    EXPECT_DOUBLE_EQ(center[1], 0.5);
+    figures[1]->getCenter(center);
+    EXPECT_DOUBLE_EQ(center[0], 3.0);
+    EXPECT_DOUBLE_EQ(center[1], 3.0);
 }
 
 int main(int argc, char **argv) {
