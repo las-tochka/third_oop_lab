@@ -1,12 +1,18 @@
 #include <gtest/gtest.h>
 #include <sstream>
 #include <array>
+#include <cstddef> 
+#include <vector>
 #include <memory>
+#include <sstream>
+#include <cmath>
 #include "../include/Figure.hpp"
 #include "../include/Square.hpp"
 #include "../include/Rectangle.hpp"
 #include "../include/Trapezoid.hpp"
-#include "../functions.cpp"
+#include "../include/FigureConteiner.hpp"
+
+constexpr size_t N = 2;
 
 TEST(SquareTest, OutputOperator) {
     const std::array<int, 2> a = {3, 7};
@@ -284,61 +290,87 @@ TEST(FigureComparisonTest, EqualAndNotEqual) {
     EXPECT_FALSE(sq1 == sq3);
 }
 
-TEST(FigureTest, CreateFigures) {
-    auto figures = createFigures();
-    ASSERT_EQ(figures.size(), 2);
-    EXPECT_DOUBLE_EQ(static_cast<double>(*figures[0]), 1.0);
-    EXPECT_DOUBLE_EQ(static_cast<double>(*figures[1]), 4.0);
+
+TEST(FigureContainerTest, CreateFigures) {
+    FigureContainer<N> container;
+    const std::array<int, 2> a1 = {0, 0};
+    const std::array<int, 2> b1 = {1, 0};
+    const std::array<int, 2> c1 = {1, 1};
+    const std::array<int, 2> d1 = {0, 1};
+    const std::array<int, 2> a2 = {2, 2};
+    const std::array<int, 2> b2 = {4, 2};
+    const std::array<int, 2> c2 = {4, 4};
+    const std::array<int, 2> d2 = {2, 4};
+    container.set(0, std::make_shared<Square>(a1, b1, c1, d1));
+    container.set(1, std::make_shared<Square>(a2, b2, c2, d2));
+    EXPECT_NE(container.get(0), nullptr);
+    EXPECT_NE(container.get(1), nullptr);
+    EXPECT_DOUBLE_EQ(static_cast<double>(*container.get(0)), 1.0);
+    EXPECT_DOUBLE_EQ(static_cast<double>(*container.get(1)), 4.0);
 }
 
-TEST(FigureTest, TotalArea) {
-    auto figures = createFigures();
-    double total = getTotalArea(figures);
-    EXPECT_DOUBLE_EQ(total, 5.0);
+TEST(FigureContainerTest, TotalArea) {
+    FigureContainer<N> container;
+    const std::array<int, 2> a1 = {0, 0};
+    const std::array<int, 2> b1 = {1, 0};
+    const std::array<int, 2> c1 = {1, 1};
+    const std::array<int, 2> d1 = {0, 1};
+    const std::array<int, 2> a2 = {2, 2};
+    const std::array<int, 2> b2 = {4, 2};
+    const std::array<int, 2> c2 = {4, 4};
+    const std::array<int, 2> d2 = {2, 4};
+    container.set(0, std::make_shared<Square>(a1, b1, c1, d1));
+    container.set(1, std::make_shared<Square>(a2, b2, c2, d2));
+    EXPECT_DOUBLE_EQ(container.totalArea(), 5.0);
 }
 
-TEST(FigureTest, RemoveFigureByIndex) {
-    auto figures = createFigures();
-    ASSERT_EQ(figures.size(), 2);
-    removeFigureByIndex(figures, 0);
-    EXPECT_EQ(figures.size(), 1);
-    EXPECT_DOUBLE_EQ(static_cast<double>(*figures[0]), 4.0);
+TEST(FigureContainerTest, RemoveFigureByIndex) {
+    FigureContainer<N> container;
+    const std::array<int, 2> a1 = {0, 0};
+    const std::array<int, 2> b1 = {1, 0};
+    const std::array<int, 2> c1 = {1, 1};
+    const std::array<int, 2> d1 = {0, 1};
+    container.set(0, std::make_shared<Square>(a1, b1, c1, d1));
+    container.remove(0);
+    EXPECT_EQ(container.get(0), nullptr);
 }
 
-TEST(FigureTest, RemoveInvalidIndex) {
-    auto figures = createFigures();
-    ASSERT_EQ(figures.size(), 2);
-    removeFigureByIndex(figures, 10);
-    EXPECT_EQ(figures.size(), 2);
+TEST(FigureContainerTest, RemoveInvalidIndex) {
+    FigureContainer<N> container;
+    testing::internal::CaptureStderr();
+    container.remove(10);
+    std::string output = testing::internal::GetCapturedStderr();
+    EXPECT_NE(output.find("вне диапазона"), std::string::npos);
 }
 
-TEST(FigureTest, MoveFigures) {
-    auto figures = createFigures();
-    auto moved = moveFigures(figures);
-    EXPECT_TRUE(figures.empty());
-    EXPECT_EQ(moved.size(), 2);
+TEST(FigureContainerTest, CopyContainer) {
+    FigureContainer<N> c1, c2;
+    const std::array<int, 2> a = {0, 0};
+    const std::array<int, 2> b = {1, 0};
+    const std::array<int, 2> c = {1, 1};
+    const std::array<int, 2> d = {0, 1};
+    c1.set(0, std::make_shared<Square>(a, b, c, d));
+    c2 = c1;
+    EXPECT_DOUBLE_EQ(static_cast<double>(*c2.get(0)), 1.0);
 }
 
-TEST(FigureTest, CopyFigures) {
-    auto figures = createFigures();
-    auto copy = copyFigures(figures);
-    EXPECT_EQ(copy.size(), figures.size());
-    EXPECT_DOUBLE_EQ(static_cast<double>(*copy[0]), static_cast<double>(*figures[0]));
-    EXPECT_DOUBLE_EQ(static_cast<double>(*copy[1]), static_cast<double>(*figures[1]));
-}
-
-TEST(FigureTest, FigureCenter) {
-    auto figures = createFigures();
-    vector<double> center;
-    figures[0]->getCenter(center);
+TEST(FigureContainerTest, FigureCenter) {
+    FigureContainer<N> container;
+    const std::array<int, 2> a1 = {0, 0};
+    const std::array<int, 2> b1 = {1, 0};
+    const std::array<int, 2> c1 = {1, 1};
+    const std::array<int, 2> d1 = {0, 1};
+    const std::array<int, 2> a2 = {2, 2};
+    const std::array<int, 2> b2 = {4, 2};
+    const std::array<int, 2> c2 = {4, 4};
+    const std::array<int, 2> d2 = {2, 4};
+    container.set(0, std::make_shared<Square>(a1, b1, c1, d1));
+    container.set(1, std::make_shared<Square>(a2, b2, c2, d2));
+    std::vector<double> center;
+    container.get(0)->getCenter(center);
     EXPECT_DOUBLE_EQ(center[0], 0.5);
     EXPECT_DOUBLE_EQ(center[1], 0.5);
-    figures[1]->getCenter(center);
+    container.get(1)->getCenter(center);
     EXPECT_DOUBLE_EQ(center[0], 3.0);
     EXPECT_DOUBLE_EQ(center[1], 3.0);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

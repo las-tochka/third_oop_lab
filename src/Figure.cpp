@@ -7,11 +7,11 @@ Figure::Figure(std::array<int, 2> a, std::array<int, 2> b,
                std::array<int, 2> c, std::array<int, 2> d)
     : A(a), B(b), C(c), D(d) {}
 
+    
 Figure& Figure::operator=(const Figure& other) {
     if (typeid(*this) != typeid(other)) {
         throw std::invalid_argument("Cannot assign: different types");
     }
-    
     A = other.A;
     B = other.B;
     C = other.C;
@@ -27,11 +27,7 @@ Figure& Figure::operator=(Figure&& other) {
     B = std::move(other.B);
     C = std::move(other.C);
     D = std::move(other.D);
-    
-    other.A = {0, 0};
-    other.B = {0, 0};
-    other.C = {0, 0};
-    other.D = {0, 0};
+    other.A = {0, 0}; other.B = {0, 0}; other.C = {0, 0}; other.D = {0, 0};
     return *this;
 }
 

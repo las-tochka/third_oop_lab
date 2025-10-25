@@ -11,8 +11,7 @@ Rectangle::Rectangle(std::array<int, 2> a, std::array<int, 2> b,
 
 void Rectangle::getCenter(std::vector<double>& result_coords) const {
     result_coords.clear();
-    double x = (A[0] + C[0]) / 2.0;
-    double y = (A[1] + C[1]) / 2.0;
+    double x = (A[0] + C[0]) / 2.0; double y = (A[1] + C[1]) / 2.0;
     result_coords.push_back(x);
     result_coords.push_back(y);
 }
